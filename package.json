@@ -1,6 +1,6 @@
 {
   "name": "qlik-auth-passport",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "an authentification module that integrates with http://passportjs.org/",
   "main": "index.js",
   "scripts": {
