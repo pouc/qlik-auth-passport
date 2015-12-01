@@ -32,5 +32,10 @@
     "passport-local": "~0.1.6",
     "passport-twitter": "~1.0.2",
     "qlik-utils": "^2.0.42"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-bump": "^0.6.0",
+    "grunt-shell": "^1.1.2"
   }
 }

@@ -1,10 +1,11 @@
-var fs = require('fs');
-var path = require('path');
-var utils = require('qlik-utils');
+var fs              = require('fs');
+var path            = require('path');
+var utils           = require('qlik-utils');
 
-var User = require('./user');
+var config          = require('../config');
+var User            = require('./user');
 
-var pfx = fs.readFileSync(path.join(__dirname, '..', 'certs', 'pouc.fr', 'client.pfx'));
+var pfx = fs.readFileSync(path.join(__dirname, '..', config.pfx));
 
 module.exports = function(app, passport) {
 
@@ -41,23 +42,32 @@ module.exports = function(app, passport) {
 
         var visa = visas.filter(function(visa) {
             return visa.name == Object.keys(req.user.auth)[0];
-        })[0];
-
-        utils.Qlik.getTicket({
-            restUri: 'https://pouc.fr:8434',
-            prefix: 'passport',
-            pfx: pfx,
-            passPhrase: undefined,
-            params: {
-                UserId: req.user.auth[visa.name][visa.authField],
-                UserDirectory: visa.name,
-                Attributes: []
-            }
-        }).then(function(ticket) {
-            res.redirect('https://pouc.fr:8443/passport/hub?qlikTicket=' + ticket.Ticket);
-        }, function(err) {
-            res.status(500).send(err);
         });
+
+        if(typeof visa !== 'undefined' && visa.length != 0) {
+
+            utils.Qlik.getTicket({
+                restUri: config.qps.uri,
+                prefix: config.qps.prefix,
+                pfx: pfx,
+                passPhrase: config.passphrase,
+                params: {
+                    UserId: req.user.auth[visa[0].name][visa[0].authField],
+                    UserDirectory: visa[0].name,
+                    Attributes: []
+                }
+            }).then(function(ticket) {
+                res.redirect(config.redirectUri + '?qlikTicket=' + ticket.Ticket);
+            }, function(err) {
+                res.status(500).send(err);
+            });
+
+        } else {
+
+            req.logout();
+            res.redirect('/');
+
+        }
 
     });
 
