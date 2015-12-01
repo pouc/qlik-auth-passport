@@ -3,97 +3,74 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 var configAuth = require('./auth'); // use this one for testing
 var User = require('../user');
 
-module.exports = function(app, passport) {
+module.exports = {
 
-    // send to facebook to do the authentication
-    app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+    active: false,
+    name: 'facebook',
+    color: 'primary',
+    icon: 'fa-facebook',
+    label: 'Facebook',
+    authField: 'name',
 
-    // handle the callback after facebook has authenticated the user
-    app.get('/auth/facebook/callback',
-        passport.authenticate('facebook', {
-            successRedirect : '/auth',
-            failureRedirect : '/'
-        }));
+    init: function (app, passport, path) {
 
-    // login
-    passport.use(new FacebookStrategy({
+        // send to facebook to do the authentication
+        app.get(path.login, passport.authenticate('facebook', {scope: 'email'}));
 
-            clientID        : configAuth.facebookAuth.clientID,
-            clientSecret    : configAuth.facebookAuth.clientSecret,
-            callbackURL     : configAuth.facebookAuth.callbackURL,
-            passReqToCallback : true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
+        // handle the callback after facebook has authenticated the user
+        app.get(path.callback,
+            passport.authenticate('facebook', {
+                successRedirect: path.success,
+                failureRedirect: path.login
+            }));
 
-        },
-        function(req, token, refreshToken, profile, done) {
+        // login
+        passport.use(new FacebookStrategy({
 
-            // asynchronous
-            process.nextTick(function() {
+                clientID: configAuth.facebookAuth.clientID,
+                clientSecret: configAuth.facebookAuth.clientSecret,
+                callbackURL: configAuth.facebookAuth.callbackURL,
+                passReqToCallback: true // allows us to pass in the req from our route (lets us check if a user is logged in or not)
 
-                // check if the user is already logged in
-                if (!req.user) {
+            },
+            function (req, token, refreshToken, profile, done) {
 
-                    User.findOne({ 'facebook.id' : profile.id }, function(err, user) {
-                        if (err)
-                            return done(err);
+                // asynchronous
+                process.nextTick(function () {
 
-                        if (user) {
+                    // check if the user is already logged in
+                    if (!req.user) {
 
-                            // if there is a user id already but no token (user was linked at one point and then removed)
-                            if (!user.facebook.token) {
-                                user.facebook.token = token;
-                                user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
-                                user.facebook.email = (profile.emails[0].value || '').toLowerCase();
+                        User.findOne({'facebook.id': profile.id}, function (err, user) {
+                            if (err)
+                                return done(err);
 
-                                user.save(function(err) {
-                                    if (err)
-                                        return done(err);
-
-                                    return done(null, user);
-                                });
+                            if (!user) {
+                                user = new User();
                             }
 
-                            return done(null, user); // user found, return that user
-                        } else {
-                            // if there is no user, create them
-                            var newUser            = new User();
+                            user.auth.facebook = {};
+                            user.auth.facebook.id = profile.id;
+                            user.auth.facebook.token = token;
+                            user.auth.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
+                            user.auth.facebook.email = (profile.emails[0].value || '').toLowerCase();
 
-                            newUser.facebook = {};
-                            newUser.facebook.id    = profile.id;
-                            newUser.facebook.token = token;
-                            newUser.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
-                            newUser.facebook.email = (profile.emails[0].value || '').toLowerCase();
-
-                            newUser.save(function(err) {
+                            user.save(function (err) {
                                 if (err)
                                     return done(err);
 
-                                return done(null, newUser);
+                                return done(null, user);
                             });
-                        }
-                    });
 
-                } else {
-                    // user already exists and is logged in, we have to link accounts
-                    var user            = req.user; // pull the user out of the session
+                        });
 
-                    user.facebook = {};
-                    user.facebook.id    = profile.id;
-                    user.facebook.token = token;
-                    user.facebook.name  = profile.name.givenName + ' ' + profile.name.familyName;
-                    user.facebook.email = (profile.emails[0].value || '').toLowerCase();
-
-                    user.save(function(err) {
-                        if (err)
-                            return done(err);
-
-                        return done(null, user);
-                    });
-
-                }
-            });
-
-        }));
-
-};
+                    } else {
+                        done('Should not happen!');
+                    }
+                });
+            }
+        ));
+    }
+}
 
 

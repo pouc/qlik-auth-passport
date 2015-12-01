@@ -8,13 +8,14 @@ var User = function() {
 
     var _this = this;
     this._id = _id++;
+    this.auth = {};
 
     this.generateHash = function(password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
     };
 
     this.validPassword = function(password) {
-        return bcrypt.compareSync(password, _this.local.password);
+        return bcrypt.compareSync(password, _this.auth.local.password);
     };
 
     this.save = function(cb) {
@@ -53,7 +54,7 @@ User.findOne = function(criteria, cb) {
         var retVal = true;
         Object.keys(criteria).forEach(function (criteriaPath) {
             var criteriaKey = records[user];
-            criteriaPath.split('.').forEach(function (criteriaPathPart) {
+            ('auth.' + criteriaPath).split('.').forEach(function (criteriaPathPart) {
                 if(typeof criteriaKey !== 'undefined') {
                     criteriaKey = criteriaKey[criteriaPathPart];
                 }
@@ -82,7 +83,7 @@ module.exports = User;
 
 
 var newUser = new User();
-newUser.local = {};
-newUser.local.email = 'lft@qlik.com';
-newUser.local.password = newUser.generateHash('test');
+newUser.auth.local = {};
+newUser.auth.local.email = 'lft@qlik.com';
+newUser.auth.local.password = newUser.generateHash('test');
 newUser.save();
