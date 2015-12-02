@@ -1,16 +1,19 @@
 {
   "name": "qlik-auth-passport",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "an authentification module that integrates with http://passportjs.org/",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pouc/qlik-auth-passport.git"
   },
-  "author": "pouc",
+  "author": {
+    "name": "pouc"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pouc/qlik-auth-passport/issues"
@@ -21,6 +24,7 @@
     "body-parser": "~1.0.0",
     "connect-flash": "~0.1.1",
     "cookie-parser": "~1.0.0",
+    "csv-parse": "^1.0.1",
     "ejs": "~0.8.5",
     "express": "~4.0.0",
     "express-session": "~1.0.0",
@@ -37,5 +41,28 @@
     "grunt": "^0.4.5",
     "grunt-bump": "^0.6.0",
     "grunt-shell": "^1.1.2"
-  }
+  },
+  "gitHead": "4030066c27243ff3ad8304dd61a845573df83054",
+  "_id": "qlik-auth-passport@1.0.3",
+  "_shasum": "858dc26a84fd9fe34f644f0ae119105de2c48df5",
+  "_from": "qlik-auth-passport@*",
+  "_npmVersion": "2.11.2",
+  "_nodeVersion": "0.12.5",
+  "_npmUser": {
+    "name": "pouc",
+    "email": "pouc@pouc.fr"
+  },
+  "dist": {
+    "shasum": "858dc26a84fd9fe34f644f0ae119105de2c48df5",
+    "tarball": "http://registry.npmjs.org/qlik-auth-passport/-/qlik-auth-passport-1.0.3.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "pouc",
+      "email": "pouc@pouc.fr"
+    }
+  ],
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/qlik-auth-passport/-/qlik-auth-passport-1.0.3.tgz",
+  "readme": "ERROR: No README data found!"
 }
