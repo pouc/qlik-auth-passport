@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -35,7 +37,8 @@
     "passport-google-oauth": "~0.1.5",
     "passport-local": "~0.1.6",
     "passport-twitter": "~1.0.2",
-    "qlik-utils": "^2.0.42"
+    "qlik-utils": "^2.0.42",
+    "snyk": "^1.280.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -64,5 +67,6 @@
   ],
   "directories": {},
   "_resolved": "https://registry.npmjs.org/qlik-auth-passport/-/qlik-auth-passport-1.0.3.tgz",
-  "readme": "ERROR: No README data found!"
+  "readme": "ERROR: No README data found!",
+  "snyk": true
 }
