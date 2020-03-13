@@ -35,7 +35,7 @@
     "passport-google-oauth": "~0.1.5",
     "passport-local": "~0.1.6",
     "passport-twitter": "~1.0.2",
-    "qlik-utils": "^2.0.42"
+    "qlik-utils": "^3.0.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
